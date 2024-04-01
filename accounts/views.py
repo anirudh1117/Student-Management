@@ -1,3 +1,4 @@
+from schoolARP.customPagination import CustomPageNumberPagination
 from .models import UserAccount
 from .serializer import UserAccountReadSerializer,UserAccoutWriteSerializer, CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer
 from trackActivity.mixins import ActivityLogMixin
@@ -16,13 +17,16 @@ class UserAccountList(ActivityLogMixin, APIView):
 
     def get(self, request, format=None):
         userAccounts = UserAccount.objects.filter(school = request.user.school)
-        print(type(userAccounts))
-        if len(list(userAccounts)) > 0 : 
-            serializer = UserAccountReadSerializer(userAccounts, many=True, context={"request": request})
-            return Response(serializer.data)
-        else:
-            print("here2222")
-            return Response([])
+        paginator = CustomPageNumberPagination()
+        page = paginator.paginate_queryset(userAccounts, request)
+
+        if page is not None:
+            serializer = UserAccountReadSerializer(
+            page, many=True, context={"request": request})
+            return paginator.get_paginated_response(serializer.data)
+        
+        serializer = UserAccountReadSerializer(userAccounts, many=True, context={"request": request})
+        return Response(serializer.data)
 
     def post(self, request, format=None):
         print(request.data)

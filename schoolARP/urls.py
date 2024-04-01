@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/attendance/',include('attendance.urls')),
     path('api/staff/',include('staff.urls')),
     path('api/leave/',include('leave.urls')),
+    path('api/teacher/',include('Teacher.urls')),
 ]

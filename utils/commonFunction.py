@@ -13,6 +13,44 @@ def unix_time_millis():
 def convert_date_time_to_unix_time_millis(dateTime):
     return dateTime.timestamp() * 1000
 
+def convert_date_to_unix_time_millis(date):
+    """
+    Converts a date object to Unix epoch time, assuming the time is midnight UTC.
+
+    Args:
+    - date (datetime.date): The date object to convert.
+
+    Returns:
+    - int: The Unix epoch time in seconds.
+    """
+    # Create a datetime object from the date object at midnight
+    dt = datetime.datetime.combine(date, datetime.time.min)
+    
+    # Make the datetime object timezone-aware, assuming UTC
+    dt = dt.replace(tzinfo=datetime.timezone.utc)
+
+    # Convert to epoch time
+    epoch_time = int(dt.timestamp())
+    return epoch_time
+
+def convert_unix_time_millis_to_date(epoch_time):
+    """
+    Converts an epoch time (Unix timestamp) to a Python date object.
+
+    Args:
+    - epoch_time (int): Epoch time in seconds.
+
+    Returns:
+    - datetime.date: The corresponding date object.
+    """
+    # Convert epoch time to a datetime object
+    epoch_time = int(epoch_time)
+    dt = datetime.datetime.utcfromtimestamp(epoch_time)
+    
+    # Extract the date part and return
+    return dt.date()
+
+
 def convert_unix_time_millis_to_date_time(unixTime):
     unixTime = int(unixTime)
     return datetime.datetime.fromtimestamp(unixTime)
